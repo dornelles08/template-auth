@@ -96,10 +96,10 @@ Overall, this project provides a reliable and efficient authentication system th
     │   ├── migrations
     │   └── schema.prisma
     ├── src
-    │   ├── app.module.ts
     │   ├── core
     │   ├── domain
     │   ├── infra
+    │   ├── app.module.ts
     │   └── main.ts
     ├── test
     │   ├── cryptography
@@ -663,7 +663,7 @@ Run builded apllication using the following command:
 ## 📌 Project Roadmap
 
 - [x] **`Task 1`**: <strike>Basic authentication with JWT</strike>
-- [ ] **`Task 2`**: Refresh token implementation.
+- [x] **`Task 2`**: <strike>Refresh token implementation.</strike>
 - [ ] **`Task 3`**: 2FA Implementation.
 
 ---
