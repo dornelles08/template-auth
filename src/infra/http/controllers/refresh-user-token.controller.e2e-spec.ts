@@ -6,7 +6,7 @@ import { hash } from "bcryptjs";
 import request from "supertest";
 import { UserFactory } from "test/factories/make-user";
 
-describe("Authenticate User (E2E)", () => {
+describe("Refresh User Token (E2E)", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
 
@@ -22,18 +22,25 @@ describe("Authenticate User (E2E)", () => {
     await app.init();
   });
 
-  it("[POST] /authenticate", async () => {
+  it("[POST] /token/refresh", async () => {
     await userFactory.makePrismaUser({
       email: "johndoe@example.com",
       password: await hash("123456", 8),
     });
 
-    const response = await request(app.getHttpServer())
+    const authResponse = await request(app.getHttpServer())
       .post("/authenticate")
       .send({
         email: "johndoe@example.com",
         password: "123456",
       });
+
+    const cookies = authResponse.get("Set-Cookie");
+
+    const response = await request(app.getHttpServer())
+      .post("/token/refresh")
+      .set("Cookie", cookies!)
+      .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.headers["set-cookie"]).toEqual([

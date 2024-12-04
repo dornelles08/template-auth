@@ -1,6 +1,14 @@
 import { AuthenticateUserUseCase } from "@/domain/application/use-cases/authenticate-user";
 import { Public } from "@/infra/auth/public";
-import { Body, Controller, HttpCode, Post, UsePipes } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Res,
+  UsePipes,
+} from "@nestjs/common";
+import { Response } from "express";
 import { z } from "zod";
 import { ZodValidationPipe } from "../pipes/zod-validation-pipe";
 
@@ -19,12 +27,22 @@ export class AuthenticateUserController {
   @Post()
   @HttpCode(200)
   @UsePipes(new ZodValidationPipe(AuthenticateUserBodySchema))
-  async handle(@Body() body: AuthenticateUserBodySchema) {
+  async handle(
+    @Body() body: AuthenticateUserBodySchema,
+    @Res({ passthrough: true }) res: Response
+  ) {
     const { email, password } = body;
 
-    const { accessToken } = await this.authenticateUser.execute({
+    const { accessToken, refreshToken } = await this.authenticateUser.execute({
       email,
       password,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      path: "/",
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
     });
 
     return { accessToken };

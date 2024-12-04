@@ -1,42 +1,29 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { Encrypter } from "../cryptography/encrypter";
-import { HashComparator } from "../cryptography/hash-comparator";
 import { UserRepository } from "../repositories/user.repository";
 
-interface AuthenticateUserUseCaseRequest {
-  email: string;
-  password: string;
+interface RefreshUserTokenUseCaseRequest {
+  userId: string;
 }
 
-interface AuthenticateUserUseCaseResponse {
+interface RefreshUserTokenUseCaseResponse {
   accessToken: string;
   refreshToken: string;
 }
 
 @Injectable()
-export class AuthenticateUserUseCase {
+export class RefreshUserTokenUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly hashComparator: HashComparator,
     private readonly encrypter: Encrypter
   ) {}
 
   async execute({
-    email,
-    password,
-  }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(email);
+    userId,
+  }: RefreshUserTokenUseCaseRequest): Promise<RefreshUserTokenUseCaseResponse> {
+    const user = await this.userRepository.findById(userId);
 
     if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    const isPasswordValid = await this.hashComparator.compare(
-      password,
-      user.password
-    );
-
-    if (!isPasswordValid) {
       throw new UnauthorizedException();
     }
 
