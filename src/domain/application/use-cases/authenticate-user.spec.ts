@@ -1,9 +1,9 @@
+import { UnauthorizedException } from "@nestjs/common";
 import { FakeEncrypter } from "test/cryptography/fake-encrypter";
 import { FakeHasher } from "test/cryptography/fake-hasher";
 import { makeUser } from "test/factories/make-user";
 import { InMemoryUserRepository } from "test/repositories/in-memory-user.repository";
 import { AuthenticateUserUseCase } from "./authenticate-user";
-import { WrongCredentialsError } from "./errors/wrong-credentials.error";
 
 let inMemoryUserRepository: InMemoryUserRepository;
 let fakeHasher: FakeHasher;
@@ -54,7 +54,7 @@ describe("Authenticate USer", () => {
 
     await expect(() =>
       sut.execute({ email: "wrongemail@email.com", password: "123456" })
-    ).rejects.toBeInstanceOf(WrongCredentialsError);
+    ).rejects.toBeInstanceOf(UnauthorizedException);
   });
 
   it("should not be able to authenticate a user with wrong password", async () => {
@@ -66,6 +66,6 @@ describe("Authenticate USer", () => {
 
     await expect(() =>
       sut.execute({ email, password: "wrongPass" })
-    ).rejects.toBeInstanceOf(WrongCredentialsError);
+    ).rejects.toBeInstanceOf(UnauthorizedException);
   });
 });
