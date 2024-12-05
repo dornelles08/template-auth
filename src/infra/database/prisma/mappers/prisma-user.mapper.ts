@@ -9,9 +9,7 @@ export class PrismaUserMapper {
         email: raw.email,
         password: raw.password,
         recoveryCode: raw.recoveryCode ? raw.recoveryCode : undefined,
-        twoFactorEnabled: raw.twoFactorEnabled
-          ? raw.twoFactorEnabled
-          : undefined,
+        twoFactorEnabled: raw.twoFactorEnabled ? raw.twoFactorEnabled : false,
         twoFactorSecret: raw.twoFactorSecret ? raw.twoFactorSecret : undefined,
       },
       raw.id
@@ -24,6 +22,9 @@ export class PrismaUserMapper {
       email: user.email,
       name: user.name,
       password: user.password,
+      twoFactorSecret: user.twoFactorSecret,
+      twoFactorEnabled: user.twoFactorEnabled,
+      recoveryCode: user.recoveryCode,
     };
   }
 }

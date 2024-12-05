@@ -11,7 +11,7 @@ let fakeEncrypter: FakeEncrypter;
 // System under test
 let sut: AuthenticateUserUseCase;
 
-describe("Authenticate USer", () => {
+describe("Authenticate User", () => {
   beforeEach(() => {
     inMemoryUserRepository = new InMemoryUserRepository();
     fakeHasher = new FakeHasher();
@@ -24,7 +24,7 @@ describe("Authenticate USer", () => {
     );
   });
 
-  it("should be able to authenticate a user", async () => {
+  it("should be able to authenticate a user without 2fa activated", async () => {
     const user = makeUser({
       email: "johndoe@example.com",
       password: await fakeHasher.hash("123456"),
@@ -40,6 +40,28 @@ describe("Authenticate USer", () => {
     expect(result).toEqual({
       accessToken: expect.any(String),
       refreshToken: expect.any(String),
+      twoFaToken: "",
+    });
+  });
+
+  it("should be able to authenticate a user with 2fa activated", async () => {
+    const user = makeUser({
+      email: "johndoe@example.com",
+      password: await fakeHasher.hash("123456"),
+      twoFactorEnabled: true,
+    });
+
+    inMemoryUserRepository.items.push(user);
+
+    const result = await sut.execute({
+      email: "johndoe@example.com",
+      password: "123456",
+    });
+
+    expect(result).toEqual({
+      twoFaToken: expect.any(String),
+      accessToken: "",
+      refreshToken: "",
     });
   });
 

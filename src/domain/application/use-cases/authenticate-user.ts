@@ -9,8 +9,9 @@ interface AuthenticateUserUseCaseRequest {
 }
 
 interface AuthenticateUserUseCaseResponse {
-  accessToken: string;
   refreshToken: string;
+  accessToken: string;
+  twoFaToken: string;
 }
 
 @Injectable()
@@ -40,6 +41,17 @@ export class AuthenticateUserUseCase {
       throw new UnauthorizedException();
     }
 
+    if (user.twoFactorEnabled) {
+      const twoFaToken = await this.encrypter.twoFaToken({
+        sub: user.id,
+      });
+      return {
+        twoFaToken,
+        accessToken: "",
+        refreshToken: "",
+      };
+    }
+
     const refreshToken = await this.encrypter.refreshToken({
       sub: user.id,
     });
@@ -51,6 +63,7 @@ export class AuthenticateUserUseCase {
     return {
       accessToken,
       refreshToken,
+      twoFaToken: "",
     };
   }
 }

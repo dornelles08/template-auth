@@ -33,10 +33,15 @@ export class AuthenticateUserController {
   ) {
     const { email, password } = body;
 
-    const { accessToken, refreshToken } = await this.authenticateUser.execute({
-      email,
-      password,
-    });
+    const { accessToken, refreshToken, twoFaToken } =
+      await this.authenticateUser.execute({
+        email,
+        password,
+      });
+
+    if (twoFaToken) {
+      return { twoFaToken };
+    }
 
     res.cookie("refreshToken", refreshToken, {
       path: "/",

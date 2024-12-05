@@ -9,7 +9,7 @@ import { Response } from "express";
 @Public()
 export class RefreshUserTokenController {
   constructor(
-    private RefreshUserToken: RefreshUserTokenUseCase,
+    private refreshUserToken: RefreshUserTokenUseCase,
     private jwtService: JwtService
   ) {}
 
@@ -25,7 +25,7 @@ export class RefreshUserTokenController {
       const userId = jwtDecodeResult.sub;
 
       const { accessToken, refreshToken: newRefreshToken } =
-        await this.RefreshUserToken.execute({
+        await this.refreshUserToken.execute({
           userId,
         });
 

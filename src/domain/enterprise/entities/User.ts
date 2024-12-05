@@ -39,4 +39,12 @@ export class User {
   get recoveryCode() {
     return this.props.recoveryCode;
   }
+
+  set twoFactorEnabled(twoFactorEnabled: boolean | undefined) {
+    this.props.twoFactorEnabled = twoFactorEnabled;
+  }
+
+  set twoFactorSecret(twoFactorSecret: string | undefined) {
+    this.props.twoFactorSecret = twoFactorSecret;
+  }
 }
