@@ -8,47 +8,13 @@ datasource db {
 }
 
 model User {
-  id               String   @id @default(uuid())
-  email            String   @unique
-  name             String
-  password         String
-  twoFactorSecret  String?
-  twoFactorEnabled Boolean?
-  recoveryCode     String?
+  id       String @id @default(uuid())
+  email    String @unique
+  name     String
+  password String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  lists List[]
-
   @@map("users")
-}
-
-model List {
-  id          String    @id @default(uuid())
-  title       String
-  description String?
-  userId      String    @map("user_id")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
-  deletedAt   DateTime? @map("deleted_at")
-
-  user  User   @relation(fields: [userId], references: [id])
-  items Item[]
-
-  @@map("lists")
-}
-
-model Item {
-  id        String    @id @default(uuid())
-  name      String
-  link      String?
-  listId    String    @map("list_id")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
-  disabled  Boolean   @default(false)
-
-  list List @relation(fields: [listId], references: [id])
-
-  @@map("items")
 }
