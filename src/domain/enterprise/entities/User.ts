@@ -5,9 +5,6 @@ export interface UserProps {
   email: string;
   name: string;
   password: string;
-  twoFactorSecret?: string;
-  twoFactorEnabled?: boolean;
-  recoveryCode?: string;
 }
 
 export class User {
@@ -29,14 +26,5 @@ export class User {
   }
   get password() {
     return this.props.password;
-  }
-  get twoFactorSecret() {
-    return this.props.twoFactorSecret;
-  }
-  get twoFactorEnabled() {
-    return this.props.twoFactorEnabled;
-  }
-  get recoveryCode() {
-    return this.props.recoveryCode;
   }
 }
