@@ -665,7 +665,8 @@ Run builded apllication using the following command:
 - [x] **`Task 1`**: <strike>Basic authentication with JWT</strike>
 - [x] **`Task 2`**: <strike>Refresh token implementation.</strike>
 - [x] **`Task 3`**: <strike>2FA Implementation.</strike>
-- [ ] **`Task 4`**: Implementation interface for otplib and qrcode libs.
+- [x] **`Task 4`**: Implementation interface for otplib.
+- [ ] **`Task 5`**: Implementation interface for qrcode.
 
 ---
 

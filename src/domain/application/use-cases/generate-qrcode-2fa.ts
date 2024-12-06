@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { authenticator } from "otplib";
 import { toDataURL } from "qrcode";
 import { UserRepository } from "../repositories/user.repository";
+import { TwoFaAuthenticator } from "../twoFa/authenticator";
 
 interface GenerateQrCodeUseCaseRequest {
   userId: string;
@@ -14,7 +14,10 @@ interface GenerateQrCodeUseCaseResponse {
 
 @Injectable()
 export class GenerateQrCodeUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly twoFaAuthenticator: TwoFaAuthenticator
+  ) {}
 
   async execute({
     userId,
@@ -30,13 +33,13 @@ export class GenerateQrCodeUseCase {
       throw new Error("User already has a 2FA secret");
     }
 
-    const secret = authenticator.generateSecret();
+    const secret = this.twoFaAuthenticator.generateSecret();
 
     user.twoFactorSecret = secret;
 
     await this.userRepository.save(user);
 
-    const uri = authenticator.keyuri(user.email, appName, secret);
+    const uri = this.twoFaAuthenticator.keyuri(user.email, appName, secret);
 
     const qrCode = await toDataURL(uri);
 

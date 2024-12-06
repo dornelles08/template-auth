@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { authenticator } from "otplib";
 import { Encrypter } from "../cryptography/encrypter";
 import { UserRepository } from "../repositories/user.repository";
+import { TwoFaAuthenticator } from "../twoFa/authenticator";
 
 interface AuthenticateTwoFaUserUseCaseRequest {
   userId: string;
@@ -17,7 +17,8 @@ interface AuthenticateTwoFaUserUseCaseResponse {
 export class AuthenticateTwoFaUserUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly encrypter: Encrypter
+    private readonly encrypter: Encrypter,
+    private readonly twoFaAuthenticator: TwoFaAuthenticator
   ) {}
 
   async execute({
@@ -30,10 +31,10 @@ export class AuthenticateTwoFaUserUseCase {
       throw new UnauthorizedException();
     }
 
-    const isValid = authenticator.verify({
+    const isValid = this.twoFaAuthenticator.verify(
       token,
-      secret: user.twoFactorSecret!,
-    });
+      user.twoFactorSecret!
+    );
 
     if (!isValid) {
       throw new UnauthorizedException();

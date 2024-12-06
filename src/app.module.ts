@@ -4,6 +4,7 @@ import { AuthModule } from "./infra/auth/auth.module";
 import { envSchema } from "./infra/env/env";
 import { EnvModule } from "./infra/env/env.module";
 import { HttpModule } from "./infra/http/http.module";
+import { TwoFaAuthenticatorModule } from "./infra/twoFa/twoFa.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { HttpModule } from "./infra/http/http.module";
     AuthModule,
     HttpModule,
     EnvModule,
+    TwoFaAuthenticatorModule,
   ],
 })
 export class AppModule {}
