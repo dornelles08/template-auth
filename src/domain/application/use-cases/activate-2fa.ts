@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { authenticator } from "otplib";
 import { UserRepository } from "../repositories/user.repository";
+import { TwoFaAuthenticator } from "../twoFa/authenticator";
 
 interface ActiveteTwoFaUseCaseRequest {
   userId: string;
@@ -11,7 +11,10 @@ interface ActiveteTwoFaUseCaseResponse {}
 
 @Injectable()
 export class ActiveteTwoFaUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly twoFaAuthenticator: TwoFaAuthenticator
+  ) {}
 
   async execute({
     userId,
@@ -27,10 +30,10 @@ export class ActiveteTwoFaUseCase {
       throw new Error("2FA not setup");
     }
 
-    const isVerify = authenticator.verify({
+    const isVerify = this.twoFaAuthenticator.verify(
       token,
-      secret: user.twoFactorSecret,
-    });
+      user.twoFactorSecret
+    );
 
     if (!isVerify) {
       throw new Error("Invalid token");

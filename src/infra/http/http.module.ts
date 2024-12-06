@@ -8,6 +8,7 @@ import { Module } from "@nestjs/common";
 import { CryptographyModule } from "../cryptography/cryptography.module";
 import { DatabaseModule } from "../database/database.module";
 import { EnvModule } from "../env/env.module";
+import { TwoFaAuthenticatorModule } from "../twoFa/twoFa.module";
 import { ActiveteTwoFaController } from "./controllers/activate-2fa.controller";
 import { AuthenticateTwoFaUserController } from "./controllers/authenticate-2fa-user.controller";
 import { AuthenticateUserController } from "./controllers/authenticate-user.controller";
@@ -16,7 +17,12 @@ import { GenerateQrCodeController } from "./controllers/generate-qrcode-2fa.cont
 import { RefreshUserTokenController } from "./controllers/refresh-user-token.controller";
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule, EnvModule],
+  imports: [
+    DatabaseModule,
+    CryptographyModule,
+    EnvModule,
+    TwoFaAuthenticatorModule,
+  ],
   controllers: [
     CreateAcountController,
     AuthenticateUserController,
